@@ -10,10 +10,18 @@
       "client_info": {
         "mobilesdk_app_id": "1:1095359276961:android:d68390fcc6fd773b5d8de0",
         "android_client_info": {
-          "package_name": "com.example.todoApp"
+          "package_name": "com.example.todoapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1095359276961-1fngtloqo7omrr3ea9mb1q4hluqs9rv6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.todoapp",
+            "certificate_hash": "606e5c6dac4cef1542f025ccf9dadcd6e4e2ba72"
+          }
+        },
         {
           "client_id": "1095359276961-dn5dlsrst2p42p6nofguvigecj1e7216.apps.googleusercontent.com",
           "client_type": 3

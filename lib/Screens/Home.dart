@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todoApp/Components/BottomSheet.dart';
+import 'package:todoApp/Services/Auth.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             backgroundColor: Colors.white,
             elevation: 0,
-            onPressed: () {},
+            onPressed: () => AuthLogin().signOut(),
           ),
         ],
       ),

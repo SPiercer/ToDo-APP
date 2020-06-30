@@ -1,21 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:todoApp/Screens/Home.dart';
-import 'package:todoApp/Screens/Landing.dart';
+import 'package:provider/provider.dart';
+
+import 'Models/User.dart';
+import 'Screens/Home.dart';
+import 'Screens/Landing.dart';
+import 'Services/Auth.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        accentColor: Color(0xfffd93a1),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiProvider(
+      providers: [
+        StreamProvider<User>.value(
+          value: AuthLogin().user,
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          accentColor: Color(0xfffd93a1),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: Wrapper(),
       ),
-      home: HomeScreen(),
     );
+  }
+}
+
+class Wrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+
+    if (user == null) {
+      return LandingScreen();
+    } else {
+      return HomeScreen();
+    }
   }
 }

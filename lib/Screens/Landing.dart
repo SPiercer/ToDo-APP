@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:todoApp/Services/Auth.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _LandingScreenState extends State<LandingScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left:35),
+            padding: const EdgeInsets.only(left: 35),
             child: Image.asset(
               'assets/landing.png',
               scale: 0.8,
@@ -47,14 +48,14 @@ class _LandingScreenState extends State<LandingScreen> {
                 fontWeight: FontWeight.w500,
                 color: Colors.black.withOpacity(0.54),
               ),
-              onPressed: () {},
+              onPressed: () async => await AuthLogin().loginUsingFacebook(),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GoogleSignInButton(
               text: 'Continue with Google     ',
-              onPressed: () {},
+              onPressed: () async => await AuthLogin().loginUsingGoogle(),
             ),
           ),
         ],
