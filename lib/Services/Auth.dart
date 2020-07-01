@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
@@ -10,11 +11,7 @@ import 'package:todoApp/Models/User.dart';
 class AuthLogin {
   final FacebookLogin _fbInstance = FacebookLogin();
   final FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email'
-    ]
-  );
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   User _userFromFirebase(FirebaseUser user) {
     return user != null ? User(uid: user.uid) : null;
   }
@@ -51,7 +48,9 @@ class AuthLogin {
   Future<void> loginUsingGoogle() async {
     try {
       print('lets GO');
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      
+      final GoogleSignInAccount googleUser =
+          await _googleSignIn.signIn().catchError((error) => print(error));
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
