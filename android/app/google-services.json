@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1095359276961-1fngtloqo7omrr3ea9mb1q4hluqs9rv6.apps.googleusercontent.com",
+          "client_id": "1095359276961-a5ser6of3k8buolgqu67sjlt77ecfvgl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.todoapp",
-            "certificate_hash": "606e5c6dac4cef1542f025ccf9dadcd6e4e2ba72"
+            "certificate_hash": "f52b752b3a00e05d0da413c0415b07acd399755b"
           }
         },
         {
@@ -36,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1095359276961-dn5dlsrst2p42p6nofguvigecj1e7216.apps.googleusercontent.com",
+              "client_id": "1095359276961-pqkha79s84gv0ul7p8ojm3mvjuadilh5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

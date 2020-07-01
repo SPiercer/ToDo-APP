@@ -10,7 +10,11 @@ import 'package:todoApp/Models/User.dart';
 class AuthLogin {
   final FacebookLogin _fbInstance = FacebookLogin();
   final FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email'
+    ]
+  );
   User _userFromFirebase(FirebaseUser user) {
     return user != null ? User(uid: user.uid) : null;
   }
@@ -46,6 +50,7 @@ class AuthLogin {
 
   Future<void> loginUsingGoogle() async {
     try {
+      print('lets GO');
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
       final GoogleSignInAuthentication googleAuth =
