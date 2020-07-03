@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoApp/Providers/Theme.dart';
-import 'package:todoApp/Services/Helpers.dart';
 
 import '../Components/AddTaskBottomSheet.dart';
 import '../Components/RadioItem.dart';
@@ -12,7 +10,9 @@ import '../Models/Radio.dart';
 import '../Models/Task.dart';
 import '../Models/User.dart';
 
+import '../Providers/Theme.dart';
 import '../Services/Auth.dart';
+import '../Services/Helpers.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TValue case2<TOptionType, TValue>(
     TOptionType selectedOption,
     Map<TOptionType, TValue> branches, [
+    // ignore: avoid_init_to_null
     TValue defaultValue = null,
   ]) {
     if (!branches.containsKey(selectedOption)) {
@@ -85,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Icons.arrow_back,
                   color: Theme.of(context).iconTheme.color,
                 ),
-                Text('sign out',
+                Text('back',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Theme.of(context).iconTheme.color))
               ],
@@ -96,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               try {
                 Auth().signOut();
               } on Exception catch (e) {
+                print(e);
                 Helpers.showMyDialog(
                     context: context,
                     msg:
@@ -124,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   TextSpan(
                       text: user.name,
-                      style:  TextStyle(
+                      style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).textTheme.button.color,
                           fontSize: 28.0)),
@@ -169,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return Padding(
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: InkWell(
+                              child: GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     radioModel.forEach((element) =>
@@ -193,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   }),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 40.0, left: 8.0),
+              padding: const EdgeInsets.only(top: 25.0, left: 8.0),
               child: const Text('Tasks',
                   style: TextStyle(
                       color: Colors.grey,
@@ -235,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         time: task['time'],
                                         isCompleted: task['completed']),
                                     'Users/${user.uid}/Dates/$selectedDate/Todos',
-                                    selectedDate,task.documentID);
+                                    selectedDate,
+                                    task.documentID);
                               },
                             );
                             break;
@@ -257,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 40.0, left: 8.0),
+              padding: const EdgeInsets.only(top: 20.0, left: 8.0),
               child: const Text('Completed',
                   style: TextStyle(
                       color: Colors.grey,
@@ -299,7 +302,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                           time: task['time'],
                                           isCompleted: task['completed']),
                                       'Users/${user.uid}/Dates/$selectedDate/Todos',
-                                      selectedDate,task.documentID);
+                                      selectedDate,
+                                      task.documentID);
                                 },
                               );
                               break;

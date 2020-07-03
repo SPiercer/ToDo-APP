@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todoApp/Models/Radio.dart';
+
+import '../Models/Radio.dart';
 
 class RadioItem extends StatelessWidget {
   final RadioModel _item;
@@ -11,12 +12,21 @@ class RadioItem extends StatelessWidget {
       child: Center(
         child: Text(_item.buttonText,
             style: TextStyle(
-              color: _item.isSelected ? Colors.black : Colors.white,
+              color: !_item.isSelected &&
+                      Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
               fontWeight: FontWeight.bold,
             )),
       ),
       decoration: BoxDecoration(
-        color: _item.isSelected ? Theme.of(context).buttonColor : Theme.of(context).primaryColor,
+        color: !_item.isSelected &&
+                Theme.of(context).brightness == Brightness.light
+            ? Theme.of(context).buttonColor
+            : (_item.isSelected &&
+                    Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).buttonColor
+                : Theme.of(context).primaryColor),
         borderRadius: const BorderRadius.all(Radius.circular(14)),
       ),
     );

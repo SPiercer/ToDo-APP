@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-import 'package:todoApp/Services/Auth.dart';
-import 'package:todoApp/Services/Helpers.dart';
+
+import '../Services/Auth.dart';
+import '../Services/Helpers.dart';
 
 class LandingScreen extends StatefulWidget {
   @override

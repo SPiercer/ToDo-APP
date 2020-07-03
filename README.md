@@ -1,16 +1,34 @@
-# todoApp
+# ToDo App
 
-A new Flutter project.
+A simple and productive Task organizer flutter project.
 
-## Getting Started
+## Introduction 
 
-This project is a starting point for a Flutter application.
+* **Features**
+  * Create your tasks ease
+  * Modify your tasks by editing their title and time
+  * Tasks are grouped by their date
+  * Easily switch App theme from Dark to Light by one tap
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* **Used technologies**
+  * Firestore Database
+  * Provider
+### Pubspec.yaml
+    dependencies:
+      flutter:
+        sdk: flutter
+      flutter_auth_buttons: ^0.8.0
+      cupertino_icons: ^0.1.3
+      provider: ^4.1.3
+      cloud_firestore: ^0.13.7
+      flutter_facebook_login: ^3.0.0
+      firebase_auth: ^0.16.1
+      google_sign_in: ^4.5.1
+      http: ^0.12.1
+      intl: ^0.16.1
+### Next tasks  
+- [x] Implement Facebook/Google Login
+- [x] Implement Dark Mode
+- [ ] cleanify code
+- [ ] Document the code
+- [ ] Add Screenshots

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoApp/Models/Task.dart';
-import 'package:todoApp/Models/User.dart';
-import 'package:todoApp/Services/Helpers.dart';
-import 'package:todoApp/Services/Tasks.dart';
+
+import '../Models/Task.dart';
+import '../Models/User.dart';
+
+import '../Services/Helpers.dart';
+import '../Services/Tasks.dart';
 
 class EditTaskBottomSheet extends StatefulWidget {
   final Task _task;

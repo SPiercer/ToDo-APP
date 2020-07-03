@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoApp/Providers/Theme.dart';
-import 'package:todoApp/Services/Constants.dart';
 
 import 'Models/User.dart';
+
 import 'Screens/Home.dart';
 import 'Screens/Landing.dart';
+
 import 'Services/Auth.dart';
 
 void main() => runApp(ChangeNotifierProvider<ThemeProvider>(
