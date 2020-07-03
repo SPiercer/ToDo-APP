@@ -20,6 +20,7 @@ class TaskItem extends StatefulWidget {
 }
 
 class _TaskItemState extends State<TaskItem> {
+  bool value = false;
   Tasks _tasksInstance = Tasks();
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,28 @@ class _TaskItemState extends State<TaskItem> {
               color: Colors.grey[100],
               borderRadius: const BorderRadius.all(Radius.circular(12.0))),
           child: ListTile(
+            onTap: () async {
+              print('ss');
+              setState(() {
+                switch (value) {
+                  case false:
+                    value = true;
+                    break;
+                  case true:
+                    value = false;
+                    break;
+                }
+                widget._task.isCompleted = value;
+              });
+              try {
+                print('');
+                await _tasksInstance.changeTaskState(
+                    widget.collection, widget.taskID, widget._task.isCompleted);
+              } on Exception catch (e) {
+                print(e);
+                Helpers.showMyDialog(context: context);
+              }
+            },
             title: Text(widget._task.title,
                 style: TextStyle(
                     decoration: widget._task.isCompleted
@@ -90,6 +113,7 @@ class _TaskItemState extends State<TaskItem> {
                 onChanged: (bool val) async {
                   setState(() {
                     widget._task.isCompleted = val;
+                    value = val;
                   });
                   try {
                     await _tasksInstance.changeTaskState(widget.collection,

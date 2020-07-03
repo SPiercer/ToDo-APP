@@ -25,7 +25,7 @@ class Tasks {
       await Firestore.instance
           .collection(collection)
           .document(document)
-          .setData({'completed': !state ? false : true}, merge: true);
+          .updateData({'completed': !state ? false : true});
 
   Future<void> addTask({String date, String uid, Task task}) async {
     await Firestore.instance
