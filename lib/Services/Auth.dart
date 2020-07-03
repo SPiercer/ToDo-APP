@@ -1,44 +1,61 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:todoApp/Models/User.dart';
 
-class AuthLogin {
+class Auth {
   final FacebookLogin _fbInstance = FacebookLogin();
   final FirebaseAuth _firebaseInstance = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+
   User _userFromFirebase(FirebaseUser user) {
-    return user != null ? User(uid: user.uid) : null;
+    return user != null
+        ? User(
+            uid: user.uid,
+            imgURL: user.photoUrl,
+            email: user.email,
+            name: user.displayName)
+        : null;
   }
 
   Stream<User> get user {
     return _firebaseInstance.onAuthStateChanged.map(_userFromFirebase);
   }
 
-  void createNewFacebookUser(String token) async {
+  void createNewFacebookUser(String token, FirebaseUser user) async {
     final http.Response graphResponse = await http.get(
         'https://graph.facebook.com/v2.12/me?fields=name,email,picture&access_token=$token');
     final profile = json.decode(graphResponse.body);
-    print(profile);
-    final user = User.fromJson(profile);
+    final _user = User.fromJson(profile);
+    UserUpdateInfo userInfo = UserUpdateInfo();
+    userInfo.displayName = _user.name;
+    userInfo.photoUrl = _user.imgURL;
+    user.updateProfile(userInfo);
     Firestore.instance.collection('Users').document(user.uid).setData({
-      'name': user.name,
+      'name': _user.name,
       'uid': user.uid,
-      'img': user.imgURL,
-      'email': user.email,
+      'img': _user.imgURL,
+      'email': _user.email,
       'source': 'facebook'
     });
   }
 
-  void createNewGoogleUser(GoogleSignInAccount user) async {
-    await Firestore.instance.collection('Users').document(user.id).setData({
+  void createNewGoogleUser(
+      GoogleSignInAccount user, FirebaseUser firebaseUser) async {
+    UserUpdateInfo userInfo = UserUpdateInfo();
+    userInfo.displayName = user.displayName;
+    userInfo.photoUrl = user.photoUrl;
+    firebaseUser.updateProfile(userInfo);
+
+    await Firestore.instance
+        .collection('Users')
+        .document(firebaseUser.uid)
+        .setData({
       'name': user.displayName,
-      'uid': user.id,
+      'uid': firebaseUser.uid,
       'img': user.photoUrl,
       'email': user.email,
       'source': 'Google'
@@ -46,25 +63,18 @@ class AuthLogin {
   }
 
   Future<void> loginUsingGoogle() async {
-    try {
-      print('lets GO');
-      
-      final GoogleSignInAccount googleUser =
-          await _googleSignIn.signIn().catchError((error) => print(error));
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
 
-      final AuthCredential googleAuthCred = GoogleAuthProvider.getCredential(
-          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-      final AuthResult authResult =
-          await _firebaseInstance.signInWithCredential(googleAuthCred);
-      final FirebaseUser user = authResult.user;
-      createNewGoogleUser(googleUser);
-      return _userFromFirebase(user);
-    } catch (error) {
-      print(error);
-    }
+    final AuthCredential googleAuthCred = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final AuthResult authResult =
+        await _firebaseInstance.signInWithCredential(googleAuthCred);
+    final FirebaseUser user = authResult.user;
+    createNewGoogleUser(googleUser, user);
+    return _userFromFirebase(user);
   }
 
   Future<void> loginUsingFacebook() async {
@@ -81,7 +91,7 @@ class AuthLogin {
             await FirebaseAuth.instance.signInWithCredential(facebookAuthCred);
 
         final FirebaseUser user = authResult.user;
-        createNewFacebookUser(result.accessToken.token);
+        createNewFacebookUser(result.accessToken.token, user);
         return _userFromFirebase(user);
         break;
 
@@ -95,11 +105,5 @@ class AuthLogin {
     }
   }
 
-  void signOut() async {
-    try {
-      return await _firebaseInstance.signOut();
-    } catch (e) {
-      print(e);
-    }
-  }
+  void signOut() async => await _firebaseInstance.signOut();
 }

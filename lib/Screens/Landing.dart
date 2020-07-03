@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:todoApp/Services/Auth.dart';
+import 'package:todoApp/Services/Helpers.dart';
 
 class LandingScreen extends StatefulWidget {
   @override
@@ -48,14 +50,28 @@ class _LandingScreenState extends State<LandingScreen> {
                 fontWeight: FontWeight.w500,
                 color: Colors.black.withOpacity(0.54),
               ),
-              onPressed: () async => await AuthLogin().loginUsingFacebook(),
+              onPressed: () async {
+                try {
+                  await Auth().loginUsingFacebook();
+                } on PlatformException catch (e) {
+                  print(e.message);
+                  await Helpers.showMyDialog(context: context);
+                }
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GoogleSignInButton(
               text: 'Continue with Google     ',
-              onPressed: () async => await AuthLogin().loginUsingGoogle(),
+              onPressed: () async {
+                try {
+                  await Auth().loginUsingGoogle();
+                } on PlatformException catch (e) {
+                  print(e.message);
+                  await Helpers.showMyDialog(context: context);
+                }
+              },
             ),
           ),
         ],

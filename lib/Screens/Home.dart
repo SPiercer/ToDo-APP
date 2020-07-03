@@ -1,6 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:todoApp/Components/BottomSheet.dart';
-import 'package:todoApp/Services/Auth.dart';
+import 'package:provider/provider.dart';
+import 'package:todoApp/Providers/Theme.dart';
+import 'package:todoApp/Services/Helpers.dart';
+
+import '../Components/AddTaskBottomSheet.dart';
+import '../Components/RadioItem.dart';
+import '../Components/TaskItem.dart';
+
+import '../Models/Radio.dart';
+import '../Models/Task.dart';
+import '../Models/User.dart';
+
+import '../Services/Auth.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -8,21 +20,43 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool taskValue = false;
+  TValue case2<TOptionType, TValue>(
+    TOptionType selectedOption,
+    Map<TOptionType, TValue> branches, [
+    TValue defaultValue = null,
+  ]) {
+    if (!branches.containsKey(selectedOption)) {
+      return defaultValue;
+    }
+
+    return branches[selectedOption];
+  }
+
+  List<RadioModel> radioModel = new List<RadioModel>();
+  String selectedDate = '';
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<User>(context);
     return Scaffold(
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           FloatingActionButton(
-            child: Icon(
-              Icons.lightbulb_outline,
-              color: Theme.of(context).primaryColor,
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.lightbulb_outline,
+                  color: Theme.of(context).accentColor,
+                ),
+                Text('Tasks',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Theme.of(context).accentColor))
+              ],
             ),
             backgroundColor: Colors.white,
             elevation: 0,
-            onPressed: () {},
+            onPressed: null,
           ),
           FloatingActionButton(
             child: Icon(
@@ -34,27 +68,44 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 elevation: 500,
                 barrierColor: Colors.black.withOpacity(0.1),
-                shape: RoundedRectangleBorder(
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(50),
                         topRight: Radius.circular(50))),
-                builder: (BuildContext context) => MyBottomSheet()),
-            shape: RoundedRectangleBorder(
+                builder: (BuildContext context) => AddTaskBottomSheet()),
+            shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
           ),
           FloatingActionButton(
-            child: Icon(
-              Icons.settings,
-              color: Theme.of(context).disabledColor,
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.arrow_back,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                Text('sign out',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Theme.of(context).iconTheme.color))
+              ],
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).backgroundColor,
             elevation: 0,
-            onPressed: () => AuthLogin().signOut(),
+            onPressed: () {
+              try {
+                Auth().signOut();
+              } on Exception catch (e) {
+                Helpers.showMyDialog(
+                    context: context,
+                    msg:
+                        'An Error occured while signing out \n please try again or check your connection');
+              }
+            },
           ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      //bottomSheet: BottomSheet(onClosing: null, builder: null),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -67,177 +118,207 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 RichText(
                     text: TextSpan(children: <TextSpan>[
-                  TextSpan(
+                  const TextSpan(
                     text: 'Hello,\n',
-                    style: TextStyle(color: Colors.grey, fontSize: 28.0),
+                    style: const TextStyle(color: Colors.grey, fontSize: 28.0),
                   ),
                   TextSpan(
-                      text: 'Username',
-                      style: TextStyle(
+                      text: user.name,
+                      style:  TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Theme.of(context).textTheme.button.color,
                           fontSize: 28.0)),
                 ])),
                 Container(
                   height: 40,
                   width: 40,
                   decoration: BoxDecoration(
-                      color: Colors.red,
+                      image: DecorationImage(image: NetworkImage(user.imgURL)),
                       borderRadius:
                           const BorderRadius.all(Radius.circular(10))),
-                )
+                ),
               ],
+            ),
+            ListTile(
+              title: Text('Switch Theme'),
+              trailing: Switch(
+                activeColor: Theme.of(context).accentColor,
+                value: Provider.of<ThemeProvider>(context).isDarkMode,
+                onChanged: (boolVal) {
+                  Provider.of<ThemeProvider>(context, listen: false)
+                      .updateTheme(boolVal);
+                },
+              ),
             ),
             Container(
               height: 50,
               margin: const EdgeInsets.only(top: 20),
-              child: ListView.builder(
-                itemCount: 5,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                    child: Container(
-                      width: 115,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(14))),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => print(index),
-                          child: Center(
-                            child: Text('SUN 29/06',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: Firestore.instance
+                      .collection('Users/${user.uid}/Dates')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.active:
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            radioModel.add(RadioModel(
+                                false, snapshot.data.documents[index]['time']));
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 8.0, right: 8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    radioModel.forEach((element) =>
+                                        element.isSelected = false);
+                                    radioModel[index].isSelected = true;
+                                    selectedDate = snapshot
+                                        .data.documents[index].documentID;
+                                  });
+                                },
+                                child: new RadioItem(radioModel[index]),
+                              ),
+                            );
+                          },
+                        );
+                        break;
+                      case ConnectionState.waiting:
+                        return Center(child: CircularProgressIndicator());
+                      default:
+                        return Container();
+                    }
+                  }),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 40.0, left: 8.0),
-              child: Text('Tasks',
+              child: const Text('Tasks',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0)),
             ),
-            Container(
-              height: 230.0,
-              child: ListView.builder(
-                itemCount: 3,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
-                      child: ListTile(
-                        title: Text('Meeting with Alex',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0)),
-                        subtitle: RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0),
-                            children: [
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 2.0),
-                                  child: Icon(
-                                    Icons.access_alarm,
-                                    color: Colors.grey,
-                                    size: 18.0,
-                                  ),
-                                ),
-                              ),
-                              TextSpan(text: '12:30 PM - 01:00 PM'),
-                            ],
+            case2(
+              selectedDate,
+              {
+                '': const Expanded(
+                    child: Center(
+                  child: Text(
+                    "Please select a date \n or add your first task",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 28.0),
+                  ),
+                ))
+              },
+              Container(
+                height: 175.0,
+                child: StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection(
+                            'Users/${user.uid}/Dates/$selectedDate/Todos')
+                        .where('completed', isEqualTo: false)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.data.documents.length != 0) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.active:
+                            return ListView.builder(
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final DocumentSnapshot task =
+                                    snapshot.data.documents[index];
+                                return TaskItem(
+                                    Task(
+                                        title: task['title'],
+                                        time: task['time'],
+                                        isCompleted: task['completed']),
+                                    'Users/${user.uid}/Dates/$selectedDate/Todos',
+                                    selectedDate,task.documentID);
+                              },
+                            );
+                            break;
+                          case ConnectionState.waiting:
+                            return Center(child: CircularProgressIndicator());
+                          default:
+                            return Container();
+                        }
+                      } else {
+                        return const Center(
+                          child: Text(
+                            'Yay!\n Looks like there is no Tasks for today.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 28.0),
                           ),
-                        ),
-                        trailing: Checkbox(
-                            value: taskValue,
-                            onChanged: (bool val) =>
-                                setState(() => taskValue = val)),
-                      ),
-                    ),
-                  );
-                },
+                        );
+                      }
+                    }),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: 40.0, left: 8.0),
-              child: Text('Completed',
+              child: const Text('Completed',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0)),
             ),
-            Container(
-              height: 200.0,
-              child: ListView.builder(
-                itemCount: 1,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
-                      child: ListTile(
-                        title: Text('Meeting with Alex',
-                            style: TextStyle(
-                                decoration: TextDecoration.lineThrough,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0)),
-                        subtitle: RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0),
-                            children: [
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 2.0),
-                                  child: Icon(
-                                    Icons.access_alarm,
-                                    color: Colors.grey,
-                                    size: 18.0,
-                                  ),
-                                ),
-                              ),
-                              TextSpan(text: '12:30 PM - 01:00 PM'),
-                            ],
-                          ),
-                        ),
-                        trailing: Checkbox(
-                            value: taskValue,
-                            onChanged: (bool val) =>
-                                setState(() => taskValue = val)),
-                      ),
+            case2(
+                selectedDate,
+                {
+                  '': const Expanded(
+                      child: Center(
+                    child: Text(
+                      "",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 28.0),
                     ),
-                  );
+                  ))
                 },
-              ),
-            ),
+                Container(
+                  height: 175.0,
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: Firestore.instance
+                          .collection(
+                              'Users/${user.uid}/Dates/$selectedDate/Todos')
+                          .where('completed', isEqualTo: true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data.documents.length != 0) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.active:
+                              return ListView.builder(
+                                itemCount: snapshot.data.documents.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final DocumentSnapshot task =
+                                      snapshot.data.documents[index];
+                                  return TaskItem(
+                                      Task(
+                                          title: task['title'],
+                                          time: task['time'],
+                                          isCompleted: task['completed']),
+                                      'Users/${user.uid}/Dates/$selectedDate/Todos',
+                                      selectedDate,task.documentID);
+                                },
+                              );
+                              break;
+                            case ConnectionState.waiting:
+                              return Center(child: CircularProgressIndicator());
+                            default:
+                              return Container();
+                          }
+                        } else {
+                          return const Center(
+                            child: Text(
+                              "Here lies your completed tasks \n Go on fill this list up !",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 28.0),
+                            ),
+                          );
+                        }
+                      }),
+                )),
           ], // Column Widget Tree
         ),
       ),
