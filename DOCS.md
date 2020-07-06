@@ -10,26 +10,26 @@
 ## Content
 * Lib
   * Components
-    * [AddTaskBottomSheet.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Components/AddTaskBottomSheet.dart)
-    * [EditTaskBottomSheet.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Components/EditTaskBottomSheet.dart)
-    * [RadioItem.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Components/RadioItem.dart)
-    * [TaskItem.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Components/TaskItem.dart) 
+    * [AddTaskBottomSheet.dart](lib/Components/AddTaskBottomSheet.dart)
+    * [EditTaskBottomSheet.dart](lib/Components/EditTaskBottomSheet.dart)
+    * [RadioItem.dart](lib/Components/RadioItem.dart)
+    * [TaskItem.dart](lib/Components/TaskItem.dart) 
   * Models
-    * [Radio.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Models/Radio.dart) 
-    * [Task.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Models/Task.dart) 
-    * [User.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Models/User.dart) 
+    * [Radio.dart](lib/Models/Radio.dart) 
+    * [Task.dart](lib/Models/Task.dart) 
+    * [User.dart](lib/Models/User.dart) 
   * Providers
-    * [Theme.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Providers/Theme.dart)
-    * [User.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Providers/User.dart)
+    * [Theme.dart](lib/Providers/Theme.dart)
+    * [User.dart](lib/Providers/User.dart)
   * Screens
-    * [Home.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Screens/Home.dart)
-    * [Landing.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Screens/Landing.dart)
+    * [Home.dart](lib/Screens/Home.dart)
+    * [Landing.dart](lib/Screens/Landing.dart)
   * Services
-    * [Auth.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Services/Auth.dart)
-    * [Constants.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Services/Constants.dart)
-    * [Helpers.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Services/Helpers.dart)
-    * [Tasks.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/Services/Tasks.dart)
-  * [main.dart](https://github.com/SPiercer/ToDo-APP/blob/master/lib/main.dart)
+    * [Auth.dart](lib/Services/Auth.dart)
+    * [Constants.dart](lib/Services/Constants.dart)
+    * [Helpers.dart](lib/Services/Helpers.dart)
+    * [Tasks.dart](lib/Services/Tasks.dart)
+  * [main.dart](lib/main.dart)
 
 ### Components
 * Add/EditTaskBottomSheet
