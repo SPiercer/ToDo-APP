@@ -33,8 +33,8 @@ A simple and productive Task organizer flutter project.
 - [x] Cleanify code
 - [ ] Document the code
 # screenshots
-![Alt text](screenshots\1.png?raw=true)
+![Alt text](screenshots/1.png?raw=true)
 | Light Mode  | Dark Mode |
 | ------------- | ------------- |
-| ![Alt text](screenshots\2.png?raw=true) | ![Alt text](screenshots\4.png?raw=true)  |
-| ![Alt text](screenshots\3.png?raw=true) | ![Alt text](screenshots\5.png?raw=true)  |
+| ![Alt text](screenshots/2.png?raw=true) | ![Alt text](screenshots/4.png?raw=true)  |
+| ![Alt text](screenshots/3.png?raw=true) | ![Alt text](screenshots/5.png?raw=true)  |
