@@ -1,7 +1,7 @@
 # ToDo App
 
-A simple and productive Task organizer flutter project.
-
+>A simple and productive Task organizer flutter project.
+## **[Go to the documentaion for this Project](DOCS.md)**
 ## Introduction 
 
 * **Features**
@@ -13,12 +13,13 @@ A simple and productive Task organizer flutter project.
 * **Used technologies**
   * Firestore Database
   * Provider
+
 ### Pubspec.yaml
+   ```YAML
     dependencies:
       flutter:
         sdk: flutter
       flutter_auth_buttons: ^0.8.0
-      cupertino_icons: ^0.1.3
       provider: ^4.1.3
       cloud_firestore: ^0.13.7
       flutter_facebook_login: ^3.0.0
@@ -26,12 +27,13 @@ A simple and productive Task organizer flutter project.
       google_sign_in: ^4.5.1
       http: ^0.12.1
       intl: ^0.16.1
+   ```
 ### Next tasks  
 - [x] Implement Facebook/Google Login
 - [x] Implement Dark Mode
 - [x] Add Screenshots
 - [x] Cleanify code
-- [ ] Document the code
+- [x] Document the code
 # screenshots
 ![Alt text](screenshots/1.png?raw=true)
 | Light Mode  | Dark Mode |
