@@ -26,13 +26,21 @@ class _TaskItemState extends State<TaskItem> {
   Widget build(BuildContext context) {
     return Dismissible(
       direction: DismissDirection.horizontal,
-      dismissThresholds: {
+      dismissThresholds: const {
         DismissDirection.endToStart: 0.5,
         DismissDirection.startToEnd: 0.4
       },
       onDismissed: (DismissDirection direction) async {
         if (direction == DismissDirection.endToStart) {
-          await _tasksInstance.deleteTask(widget.collection, widget.date);
+          try {
+            await _tasksInstance.deleteTask(widget.collection, widget.date);
+            // ignore: unused_catch_clause
+          } on Exception catch (e) {
+            await Helpers.showMyDialog(
+                context: context,
+                msg:
+                    'An error has occured while Deleting your task \n please check your connection or try again later');
+          }
         } else
           await showModalBottomSheet(
               context: context,
@@ -57,25 +65,24 @@ class _TaskItemState extends State<TaskItem> {
               borderRadius: const BorderRadius.all(Radius.circular(12.0))),
           child: ListTile(
             onTap: () async {
-              print('ss');
-              setState(() {
-                switch (value) {
-                  case false:
-                    value = true;
-                    break;
-                  case true:
-                    value = false;
-                    break;
-                }
-                widget._task.isCompleted = value;
-              });
               try {
-                print('');
+                setState(() {
+                  switch (value) {
+                    case false:
+                      value = true;
+                      break;
+                    case true:
+                      value = false;
+                      break;
+                  }
+                  widget._task.isCompleted = value;
+                });
                 await _tasksInstance.changeTaskState(
                     widget.collection, widget.taskID, widget._task.isCompleted);
-              } on Exception catch (e) {
-                print(e);
-                Helpers.showMyDialog(context: context);
+              } on Exception {
+                Helpers.showMyDialog(
+                    context: context,
+                    msg: 'An error has occured please try again');
               }
             },
             title: Text(widget._task.title,
@@ -88,7 +95,7 @@ class _TaskItemState extends State<TaskItem> {
                     fontSize: 20.0)),
             subtitle: RichText(
               text: TextSpan(
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0),
@@ -111,16 +118,17 @@ class _TaskItemState extends State<TaskItem> {
                 activeColor: Theme.of(context).accentColor,
                 value: widget._task.isCompleted,
                 onChanged: (bool val) async {
-                  setState(() {
-                    widget._task.isCompleted = val;
-                    value = val;
-                  });
                   try {
+                    setState(() {
+                      widget._task.isCompleted = val;
+                      value = val;
+                    });
                     await _tasksInstance.changeTaskState(widget.collection,
                         widget.taskID, widget._task.isCompleted);
-                  } on Exception catch (e) {
-                    print(e);
-                    Helpers.showMyDialog(context: context);
+                  } on Exception {
+                    Helpers.showMyDialog(
+                        context: context,
+                        msg: 'An error has occured please try again');
                   }
                 }),
           ),

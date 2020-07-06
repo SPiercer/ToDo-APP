@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 import '../Components/AddTaskBottomSheet.dart';
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: null,
           ),
           FloatingActionButton(
-            child: Icon(
+            child: const Icon(
               Icons.add,
               color: Colors.white,
               size: 42.0,
@@ -96,8 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               try {
                 Auth().signOut();
-              } on Exception catch (e) {
-                print(e);
+              } on Exception {
                 Helpers.showMyDialog(
                     context: context,
                     msg:
@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: TextSpan(children: <TextSpan>[
                   const TextSpan(
                     text: 'Hello,\n',
-                    style: const TextStyle(color: Colors.grey, fontSize: 28.0),
+                    style: TextStyle(color: Colors.grey, fontSize: 28.0),
                   ),
                   TextSpan(
                       text: user.name,
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             ListTile(
-              title: Text('Switch Theme'),
+              title: const Text('Switch Theme'),
               trailing: Switch(
                 activeColor: Theme.of(context).accentColor,
                 value: Provider.of<ThemeProvider>(context).isDarkMode,
@@ -188,15 +188,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                         break;
                       case ConnectionState.waiting:
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       default:
                         return Container();
                     }
                   }),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 25.0, left: 8.0),
-              child: const Text('Tasks',
+            const Padding(
+              padding: EdgeInsets.only(top: 25.0, left: 8.0),
+              child: Text('Tasks',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
@@ -243,7 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             );
                             break;
                           case ConnectionState.waiting:
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           default:
                             return Container();
                         }
@@ -259,9 +260,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, left: 8.0),
-              child: const Text('Completed',
+            const Padding(
+              padding: EdgeInsets.only(top: 20.0, left: 8.0),
+              child: Text('Completed',
                   style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
@@ -308,7 +309,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                               break;
                             case ConnectionState.waiting:
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(
+                                  child: CircularProgressIndicator());
                             default:
                               return Container();
                           }

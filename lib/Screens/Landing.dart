@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 
 import '../Services/Auth.dart';
@@ -25,16 +25,16 @@ class _LandingScreenState extends State<LandingScreen> {
               scale: 0.8,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 38.0, left: 38.0, top: 18.0),
+          const Padding(
+            padding: EdgeInsets.only(right: 38.0, left: 38.0, top: 18.0),
             child: Text(
               'Organize your work',
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 27.0),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 38.0, left: 38.0, top: 18.0),
+          const Padding(
+            padding: EdgeInsets.only(right: 38.0, left: 38.0, top: 18.0),
             child: Text(
               "let's organize your work with priority and do everything without stress",
               textAlign: TextAlign.center,
@@ -54,9 +54,11 @@ class _LandingScreenState extends State<LandingScreen> {
               onPressed: () async {
                 try {
                   await Auth().loginUsingFacebook();
-                } on PlatformException catch (e) {
-                  print(e.message);
-                  await Helpers.showMyDialog(context: context);
+                } on Exception {
+                  await Helpers.showMyDialog(
+                      context: context,
+                      msg:
+                          'An Error has occured while logging in using FB \n Please check your connection and try again');
                 }
               },
             ),
@@ -68,9 +70,11 @@ class _LandingScreenState extends State<LandingScreen> {
               onPressed: () async {
                 try {
                   await Auth().loginUsingGoogle();
-                } on PlatformException catch (e) {
-                  print(e.message);
-                  await Helpers.showMyDialog(context: context);
+                } on Exception {
+                  await Helpers.showMyDialog(
+                      context: context,
+                      msg:
+                          'An Error has occured while logging in using Google \n Please check your connection and try again');
                 }
               },
             ),

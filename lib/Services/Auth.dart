@@ -30,13 +30,13 @@ class Auth {
   void createNewFacebookUser(String token, FirebaseUser user) async {
     final http.Response graphResponse = await http.get(
         'https://graph.facebook.com/v2.12/me?fields=name,email,picture&access_token=$token');
-    final profile = json.decode(graphResponse.body);
-    final _user = User.fromJson(profile);
+    final Map<String, dynamic> profile = json.decode(graphResponse.body);
+    final User _user = User.fromJson(profile);
     UserUpdateInfo userInfo = UserUpdateInfo();
     userInfo.displayName = _user.name;
     userInfo.photoUrl = _user.imgURL;
-    user.updateProfile(userInfo);
-    Firestore.instance.collection('Users').document(user.uid).setData({
+    await user.updateProfile(userInfo);
+    await Firestore.instance.collection('Users').document(user.uid).setData({
       'name': _user.name,
       'uid': user.uid,
       'img': _user.imgURL,
@@ -50,7 +50,7 @@ class Auth {
     UserUpdateInfo userInfo = UserUpdateInfo();
     userInfo.displayName = user.displayName;
     userInfo.photoUrl = user.photoUrl;
-    firebaseUser.updateProfile(userInfo);
+    await firebaseUser.updateProfile(userInfo);
 
     await Firestore.instance
         .collection('Users')
@@ -81,30 +81,18 @@ class Auth {
 
   Future<void> loginUsingFacebook() async {
     _fbInstance.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    final result = await _fbInstance.logIn(['email', 'public_profile']);
+    final FacebookLoginResult result =
+        await _fbInstance.logIn(['email', 'public_profile']);
 
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final AuthCredential facebookAuthCred =
-            FacebookAuthProvider.getCredential(
-                accessToken: result.accessToken.token);
+    final AuthCredential facebookAuthCred = FacebookAuthProvider.getCredential(
+        accessToken: result.accessToken.token);
 
-        final AuthResult authResult =
-            await FirebaseAuth.instance.signInWithCredential(facebookAuthCred);
+    final AuthResult authResult =
+        await FirebaseAuth.instance.signInWithCredential(facebookAuthCred);
 
-        final FirebaseUser user = authResult.user;
-        createNewFacebookUser(result.accessToken.token, user);
-        return _userFromFirebase(user);
-        break;
-
-      case FacebookLoginStatus.cancelledByUser:
-        print('canceled');
-        break;
-
-      case FacebookLoginStatus.error:
-        print(result.errorMessage);
-        break;
-    }
+    final FirebaseUser user = authResult.user;
+    createNewFacebookUser(result.accessToken.token, user);
+    return _userFromFirebase(user);
   }
 
   void signOut() async => await _firebaseInstance.signOut();

@@ -30,7 +30,7 @@ A simple and productive Task organizer flutter project.
 - [x] Implement Facebook/Google Login
 - [x] Implement Dark Mode
 - [x] Add Screenshots
-- [ ] cleanify code
+- [x] Cleanify code
 - [ ] Document the code
 # screenshots
 ![Alt text](screenshots\1.png?raw=true)

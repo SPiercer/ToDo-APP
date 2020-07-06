@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:provider/provider.dart';
 
 import '../Models/Task.dart';
@@ -28,24 +29,24 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Divider(
               thickness: 5,
               indent: 135,
               endIndent: 135,
             ),
           ),
-          Center(
+          const Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Text('Edit this task',
                   style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0, left: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 40.0, left: 8.0),
             child: Text('Task title',
                 style: TextStyle(
                     color: Colors.grey,
@@ -56,12 +57,12 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
                 color: Colors.grey[300].withOpacity(0.4),
               ),
               child: TextField(
                 onChanged: (String val) => setState(() => title = val),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 16.0),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(
@@ -70,8 +71,8 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 20.0, left: 8.0),
             child: Text('Select date & time',
                 style: TextStyle(
                     color: Colors.grey,
@@ -88,32 +89,30 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
                         onPressed: null,
                         color: Colors.grey[300].withOpacity(0.4),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
-                        icon: Icon(Icons.date_range),
+                        icon: const Icon(Icons.date_range),
                         label: Text(
                           widget.date,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ))),
                 Container(
                     child: RaisedButton.icon(
                         onPressed: () async {
                           TimeOfDay _time = await showTimePicker(
                               context: context, initialTime: TimeOfDay.now());
-                          setState(() {
-                            time = _time.format(context);
-                          });
+                          setState(() => time = _time.format(context));
                         },
                         color: Colors.grey[300].withOpacity(0.4),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(15))),
-                        icon: Icon(Icons.access_time),
+                        icon: const Icon(Icons.access_time),
                         label: Text(
                           time,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ))),
               ],
             ),
@@ -123,7 +122,7 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
             child: Container(
               height: 65,
               child: Card(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 elevation: 5,
                 color: Theme.of(context).accentColor,
@@ -137,19 +136,26 @@ class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
                             msg:
                                 'No task was edited \n Please fill up all the fields');
                       } else {
-                        await Tasks().editTask(
-                          date: widget.date,
-                          taskID: widget.taskID,
-                          task: Task(
-                              title: title,
-                              time: time,
-                              isCompleted: widget._task.isCompleted),
-                          uid: Provider.of<User>(context, listen: false).uid,
-                        );
-                        Navigator.pop(context);
+                        try {
+                          await Tasks().editTask(
+                            date: widget.date,
+                            taskID: widget.taskID,
+                            task: Task(
+                                title: title,
+                                time: time,
+                                isCompleted: widget._task.isCompleted),
+                            uid: Provider.of<User>(context, listen: false).uid,
+                          );
+                          Navigator.pop(context);
+                        } on Exception {
+                          await Helpers.showMyDialog(
+                              context: context,
+                              msg:
+                                  'An error has occured while editing your task \n please check your connection or try again later');
+                        }
                       }
                     },
-                    child: Center(
+                    child: const Center(
                       child: Text('Done',
                           style: TextStyle(
                               color: Colors.white,

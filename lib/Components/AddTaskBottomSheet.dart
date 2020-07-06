@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -25,25 +26,24 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Divider(
               thickness: 5,
               indent: 135,
               endIndent: 135,
             ),
           ),
-          Center(
+          const Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: Text('Create a task',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0)),
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0, left: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 40.0, left: 8.0),
             child: Text('Task title',
                 style: TextStyle(
                     color: Colors.grey,
@@ -54,22 +54,22 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             padding: const EdgeInsets.all(16.0),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
                 color: Colors.grey[300].withOpacity(0.2),
               ),
               child: TextField(
                 onChanged: (String val) => setState(() => title = val),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelStyle: TextStyle(color: Colors.grey, fontSize: 16.0),
                     border: InputBorder.none,
-                    contentPadding:
-                        EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
+                    contentPadding: EdgeInsets.only(
+                        left: 15, bottom: 11, top: 11, right: 15),
                     labelText: 'Task title'),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0, left: 8.0),
+          const Padding(
+            padding: EdgeInsets.only(top: 20.0, left: 8.0),
             child: Text('Select date & time',
                 style: TextStyle(
                     color: Colors.grey,
@@ -97,30 +97,30 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         },
                         color: Colors.grey[300].withOpacity(0.4),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15))),
-                        icon: Icon(Icons.date_range),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        icon: const Icon(Icons.date_range),
                         label: Text(
                           date,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ))),
                 Container(
                     child: RaisedButton.icon(
                         onPressed: () async {
                           TimeOfDay _time = await showTimePicker(
                               context: context, initialTime: TimeOfDay.now());
-                          setState(() {
-                            time = _time.format(context);
-                          });
+                          setState(() => time = _time.format(context));
                         },
                         color: Colors.grey[300].withOpacity(0.4),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15))),
-                        icon: Icon(Icons.access_time),
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15))),
+                        icon: const Icon(Icons.access_time),
                         label: Text(
                           time,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ))),
               ],
             ),
@@ -130,7 +130,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             child: Container(
               height: 65,
               child: Card(
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(12))),
                 elevation: 5,
                 color: Theme.of(context).accentColor,
@@ -139,21 +139,35 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   child: InkWell(
                     onTap: () async {
                       print(date);
-                      if (title == null || date == 'Select a date' || time == 'Select time') {
-                        Helpers.showMyDialog(context: context,msg: 'No task was created \n Please fill up all the fields');
+                      if (title == null ||
+                          date == 'Select a date' ||
+                          time == 'Select time') {
+                        Helpers.showMyDialog(
+                            context: context,
+                            msg:
+                                'No task was created \n Please fill up all the fields');
                       } else {
-                        await Tasks().addTask(
-                          date: date,
-                          task:
-                              Task(title: title, time: time, isCompleted: false),
-                          uid: Provider.of<User>(context, listen: false).uid,
-                        );
+                        try {
+                          await Tasks().addTask(
+                            date: date,
+                            task: Task(
+                                title: title, time: time, isCompleted: false),
+                            uid: Provider.of<User>(context, listen: false).uid,
+                          );
+                          Navigator.pop(context);
+                        } on Exception {
+                          await Helpers.showMyDialog(
+                              context: context,
+                              msg:
+                                  'An error has occured while adding your task \n please check your connection or try again later');
+                        }
                       }
                     },
-                    child: Center(
+                    child: const Center(
                       child: Text('Done',
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold)),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ),
